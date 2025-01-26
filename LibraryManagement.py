@@ -14,20 +14,22 @@ class Book_Service():
         class_list = []
         with open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8") as file:
             list = [line.strip().split("|") for line in file]
-            for item in list:
-                title = item[0]
+            if list != [['']] and list != []:
+                for item in list:
+                    title = item[0]
 
-                author = item[1]
+                    author = item[1]
 
-                publication_year = item[2]
+                    publication_year = item[2]
 
-                status = item[3]
+                    status = item[3]
 
-                book = Book(title, author, publication_year, status)
-                class_list.append(book)
-            print(class_list)
-        return class_list
-
+                    book = Book(title, author, publication_year, status)
+                    class_list.append(book)
+                print(class_list)
+                return class_list
+            else:
+                return 0
 
     def create_book(self):
         print("=== Add Book ===" + "\n")
@@ -47,73 +49,65 @@ class Book_Service():
     def list_book(self,all_books):
         print("=== List All Book ===" + "\n")
         count = 1
-        #list = []
-        #with open("C:\\Users\\omidd\\Desktop\\library.txt", "r",encoding = "utf-8") as file:
-
-            #list = [line.strip().split("|") for line in file]
-            #for book in list:
-                #print(f"{count}.tilte:\033[1m{book[0]}\033[0m author:\033[1m{book[1]}\033[0m publication year:\033[1m{book[2]}\033[0m status:\033[1m{book[3]}\033[0m")
-                #count += 1
-        for book in all_books:
-            print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-            count += 1
+        try:
+            for book in all_books:
+                print("No Error here in list book")
+                print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                count += 1
+        except:
+            print("*****There is no book in library!*****")
         return
 
     def search_book(self,all_books):
         print("=== Search Books ===" + "\n")
         count = 1
         list = []
-        #file = open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8")
-        #list = [line.strip().split("|") for line in file]
-        name = str(input("Please write here the name of book or name of author:"))
-        for book in all_books:
-            if name == book.get_title()  or name == book.get_author():
-                list.append(book)
-            else:
-                continue
-        for book in list:
-            print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-            count += 1
+        if all_books != 0 :
 
-        return book
+            name = str(input("Please write here the name of book or name of author:"))
+            for book in all_books:
+                if name == book.get_title()  or name == book.get_author():
+                    list.append(book)
+                else:
+                    continue
+            for book in list:
+                print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                count += 1
+            return book
+        else:
+            print("*****There is no book in library!*****")
 
 
 
     def mark_book(self,book,all_books):
         print("=== Borrow/Return ===" + "\n")
-        value = str(input("--Do you want to change status of this book:-- " +"\n"+"if yes please enter 1 otherwise please enter 0: "))
-        print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-        count = 0
-        if value == "1":
-            for item in all_books:
-                if item == book:
-                    item.status= "Borrowed"
-                    print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-            # all_books[count].
-        return all_books
+        if all_books != 0:
+            value = str(input("--Do you want to change status of this book:-- " +"\n"+"if yes please enter 1 otherwise please enter 0: "))
+            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+            count = 0
+            if value == "1":
+                for item in all_books:
+                    if item == book:
+                        item.status= "Borrowed"
+                        print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+
+        else:
+            return 0
 
 
+    def save_exit(self,all_books):
+        print(all_books)
+        if all_books != 0:
+            file = open("C:\\Users\\omidd\\Desktop\\library.txt", "w", encoding="utf-8")
+            for book in all_books:
+                print(all_books)
+                file.write(book.get_title() + "|" + book.get_author() + "|" + book.get_publication_year() + "|" + book.get_status() + "\n")
 
+            file.close()
 
-
-        return
-
-
-    def show_status(self):
-
-
-        return
-
-
-    def save_exit(self,all_books_to_save):
-
-        file = open("C:\\Users\\omidd\\Desktop\\library.txt", "a", encoding="utf-8")
-        for book in all_books_to_save:
-            file.write(book.get_title() + "|" + book.get_author() + "|" + book.get_publication_year() + "|" + book.get_status() + "\n")
-        file.close()
-        return
-
-        return
+            return
+        else:
+            print("*****There is no book in library!*****")
 
     def back_to_menu(self):
         value = ""
@@ -135,16 +129,17 @@ def main_menu():
     menu_input = str(input("Pleas select: "))
     return menu_input
 k = 0
-
+book_service = Book_Service()
+all_books = book_service.read_library_file()
 while (k < 1):
-    book_service = Book_Service()
-    all_books = book_service.read_library_file()
     menu_input = main_menu()
 
     print(all_books)
     k += 1
     if menu_input == "1":
-        book_service.create_book()
+        book = book_service.create_book()
+        all_books.append(book)
+        print(all_books)
         k = int(book_service.back_to_menu())
 
 
@@ -158,12 +153,13 @@ while (k < 1):
 
     elif menu_input == "4":
         book = book_service.search_book(all_books)
-        all_books_to_save = book_service.mark_book(book,all_books)
+        all_books = book_service.mark_book(book,all_books)
         k = int(book_service.back_to_menu())
 
 
     elif menu_input == "5":
-        book_service.save_exit(all_books_to_save)
+        book_service.save_exit(all_books)
+        k = int(book_service.back_to_menu())
 
 
 
