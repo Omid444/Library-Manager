@@ -12,24 +12,28 @@ class Book_Service():
     def read_library_file(self):
         list = []
         class_list = []
-        with open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8") as file:
-            list = [line.strip().split("|") for line in file]
-            if list != [['']] and list != []:
-                for item in list:
-                    title = item[0]
+        try:
+            with open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8") as file:
+                list = [line.strip().split("|") for line in file]
+                if list != [['']] and list != []:
+                    for item in list:
+                        title = item[0]
 
-                    author = item[1]
+                        author = item[1]
 
-                    publication_year = item[2]
+                        publication_year = item[2]
 
-                    status = item[3]
+                        status = item[3]
 
-                    book = Book(title, author, publication_year, status)
-                    class_list.append(book)
-                print(class_list)
-                return class_list
-            else:
-                return 0
+                        book = Book(title, author, publication_year, status)
+                        class_list.append(book)
+                    return class_list
+                else:
+                    return 0
+        except:
+            print("*****There is no library.txt file in directory !!!*****")
+            print("Make a new one?" + "   " + "Please go to add book menu" + "   " + "otherwise find backup file" + "\n")
+            return 0
 
     def create_book(self):
         print("=== Add Book ===" + "\n")
@@ -51,11 +55,10 @@ class Book_Service():
         count = 1
         try:
             for book in all_books:
-                print("No Error here in list book")
                 print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
                 count += 1
         except:
-            print("*****There is no book in library!*****")
+            print("*****There is no book in library!*****"+"\n")
         return
 
     def search_book(self,all_books):
@@ -66,16 +69,20 @@ class Book_Service():
 
             name = str(input("Please write here the name of book or name of author:"))
             for book in all_books:
-                if name == book.get_title()  or name == book.get_author():
+                if name in book.get_title()  or name in book.get_author():
                     list.append(book)
                 else:
                     continue
-            for book in list:
-                print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-                count += 1
-            return book
+            if list:
+                for book in list:
+                    print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                    count += 1
+                return book
+            else:
+                print(f"*****No {name} found as title or author!*****")
         else:
-            print("*****There is no book in library!*****")
+            print("*****There is no book in library!*****"+"\n")
+
 
 
 
@@ -88,26 +95,32 @@ class Book_Service():
             if value == "1":
                 for item in all_books:
                     if item == book:
-                        item.status= "Borrowed"
-                        print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                        if item.status == "Returned":
+                            item.status= "Borrowed"
+                            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                            #print(all_books)
+                        elif item.status == "Borrowed":
+                            item.status = "Returned"
+                            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+            return all_books
 
         else:
             return 0
 
 
     def save_exit(self,all_books):
-        print(all_books)
+        #print(all_books)
         if all_books != 0:
             file = open("C:\\Users\\omidd\\Desktop\\library.txt", "w", encoding="utf-8")
             for book in all_books:
-                print(all_books)
+                #print(all_books)
                 file.write(book.get_title() + "|" + book.get_author() + "|" + book.get_publication_year() + "|" + book.get_status() + "\n")
 
             file.close()
 
-            return
+            return print("---Data saved---")
         else:
-            print("*****There is no book in library!*****")
+            print("*****There is no book in library!*****"+"\n")
 
     def back_to_menu(self):
         value = ""
@@ -134,10 +147,12 @@ all_books = book_service.read_library_file()
 while (k < 1):
     menu_input = main_menu()
 
-    print(all_books)
+    #print(all_books)
     k += 1
     if menu_input == "1":
         book = book_service.create_book()
+        if all_books == 0:
+            all_books = []
         all_books.append(book)
         print(all_books)
         k = int(book_service.back_to_menu())
