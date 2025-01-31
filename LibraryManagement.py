@@ -10,13 +10,12 @@ class Book_Service():
 
 
     def read_library_file(self):
-        list = []
         class_list = []
         try:
             with open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8") as file:
-                list = [line.strip().split("|") for line in file]
-                if list != [['']] and list != []:
-                    for item in list:
+                list_1 = [line.strip().split("|") for line in file]
+                if list_1 != [['']] and list_1 != []:
+                    for item in list_1:
                         title = item[0]
 
                         author = item[1]
@@ -43,7 +42,7 @@ class Book_Service():
 
         publication_year = str(input("Pleas Write Publication year: "))
 
-        status = "Returned"
+        status = "Available"
 
         book = Book(title, author, publication_year, status)
         return book
@@ -64,21 +63,22 @@ class Book_Service():
     def search_book(self,all_books):
         print("=== Search Books ===" + "\n")
         count = 1
-        list = []
+        result = []
         if all_books != 0 :
 
             name = str(input("Please write here the name of book or name of author:"))
             for book in all_books:
                 if name in book.get_title()  or name in book.get_author():
-                    list.append(book)
+                    result.append(book)
                 else:
                     continue
-            if list:
-                for book in list:
+
+            if result: # to make sure that library is not empty or a book exist in our list
+                for book in result:
                     print(f"{count}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
                     count += 1
-                return book
-            else:
+                return result , count
+
                 print(f"*****No {name} found as title or author!*****")
         else:
             print("*****There is no book in library!*****"+"\n")
@@ -86,24 +86,72 @@ class Book_Service():
 
 
 
-    def mark_book(self,book,all_books):
+    def mark_book(self,all_books):
         print("=== Borrow/Return ===" + "\n")
+        result = []
+        book_index = []
+        count = 1
+        k = 0
         if all_books != 0:
-            value = str(input("--Do you want to change status of this book:-- " +"\n"+"if yes please enter 1 otherwise please enter 0: "))
-            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-            count = 0
-            if value == "1":
-                for item in all_books:
-                    if item == book:
-                        if item.status == "Returned":
-                            item.status= "Borrowed"
-                            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-                            #print(all_books)
-                        elif item.status == "Borrowed":
-                            item.status = "Returned"
-                            print(f"1.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
-            return all_books
+            while k < 1:
+                k += 1
+                name = str(input("Please write here the name (or part of name) of book or name of author: "))
+                for book in all_books:
+                    if name in book.get_title()  or name in book.get_author():
+                        result.append(book)
+                    else:
+                        continue
 
+                if result: # to make sure that library is not empty or a book exist in our list
+                    for book in result:
+                        print(f"{all_books.index(book)+1}.tilte:\033[1m{book.get_title()}\033[0m author:\033[1m{book.get_author()}\033[0m publication year:\033[1m{book.get_publication_year()}\033[0m status:\033[1m{book.get_status()}\033[0m")
+                        count += 1
+                        book_index.append(all_books.index(book))
+
+                    select = str(input("please select the number of book that you want to change its status: "))
+
+                    try:
+
+                        if int(select) <= (len(all_books)+1) and int(select) > 0 :
+                            try:
+                                print(f"{select}.tilte:\033[1m{all_books[int(select)-1].get_title()}\033[0m author:\033[1m{all_books[int(select)-1].get_author()}\033[0m publication year:\033[1m{all_books[int(select)-1].get_publication_year()}\033[0m status:\033[1m{all_books[int(select)-1].get_status()}\033[0m")
+
+
+                                value = str(input("--Do you want to change status of this book:-- " +"\n"+"if yes please enter 1 otherwise please enter 0: "))
+                                if value == "1":
+                                                if all_books[int(select)-1].status == "Available":
+                                                    all_books[int(select)-1].status= "Borrowed"
+                                                    print(f"1.tilte:\033[1m{all_books[int(select)-1].get_title()}\033[0m author:\033[1m{all_books[int(select)-1].get_author()}\033[0m publication year:\033[1m{all_books[int(select)-1].get_publication_year()}\033[0m status:\033[1m{all_books[int(select)-1].get_status()}\033[0m")
+
+                                                elif all_books[int(select)-1].status == "Borrowed":
+                                                    all_books[int(select)-1].status = "Available"
+                                                    print(f"1.tilte:\033[1m{all_books[int(select)-1].get_title()}\033[0m author:\033[1m{all_books[int(select)-1].get_author()}\033[0m publication year:\033[1m{all_books[int(select)-1].get_publication_year()}\033[0m status:\033[1m{all_books[int(select)-1].get_status()}\033[0m")
+                                                return all_books
+                                else:
+                                    return all_books
+                            except IndexError:
+                                print(f"!!!***wrong input(you pressed {select} )***")
+                                k = 0
+                                count = 1
+                                result = []
+                                return all_books
+
+
+                        else:
+                            print(f"***wrong input(you pressed {select} )***")
+                            return all_books
+
+                    except ValueError:
+                        print(f"***wrong input(you pressed {select} )***")
+                        k = 0
+                        count = 1
+                        result = []
+                        return all_books
+
+
+                else:
+                    print("No book found!*****" + "\n")
+                    return all_books
         else:
             return 0
 
@@ -154,7 +202,7 @@ while (k < 1):
         if all_books == 0:
             all_books = []
         all_books.append(book)
-        print(all_books)
+        print("---Your book added in library but you need to save it before closing the program---")
         k = int(book_service.back_to_menu())
 
 
@@ -167,8 +215,7 @@ while (k < 1):
         k = int(book_service.back_to_menu())
 
     elif menu_input == "4":
-        book = book_service.search_book(all_books)
-        all_books = book_service.mark_book(book,all_books)
+        all_books = book_service.mark_book(all_books)
         k = int(book_service.back_to_menu())
 
 
@@ -176,6 +223,10 @@ while (k < 1):
         book_service.save_exit(all_books)
         k = int(book_service.back_to_menu())
 
+
+    else:
+        print(f"*****Wrong input!!!(You pressed {menu_input})*****")
+        k = 0
 
 
 
