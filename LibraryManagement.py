@@ -12,7 +12,8 @@ class Book_Service():
     def read_library_file(self):
         list = []
         class_list = []
-        with open("C:\\Users\\omidd\\Desktop\\library.txt", "r", encoding="utf-8") as file:
+        # use relative path to work on every computer where program is located and exist library.txt
+        with open("library.txt", "r", encoding="utf-8") as file:
             list = [line.strip().split("|") for line in file]
             for item in list:
                 title = item[0]
@@ -106,8 +107,8 @@ class Book_Service():
 
 
     def save_exit(self,all_books_to_save):
-
-        file = open("C:\\Users\\omidd\\Desktop\\library.txt", "a", encoding="utf-8")
+        # use relative path to work on every computer where program is located and exist library.txt
+        file = open("library.txt", "a", encoding="utf-8")
         for book in all_books_to_save:
             file.write(book.get_title() + "|" + book.get_author() + "|" + book.get_publication_year() + "|" + book.get_status() + "\n")
         file.close()
